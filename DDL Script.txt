@@ -1,0 +1,308 @@
+------------------------------------------------------------------------------------DDL SCRIPT-------------------------------------------------------------------------------------------------
+
+
+
+
+CREATE TABLE "User"(
+     UserId INT PRIMARY KEY,
+     EmailID VARCHAR(255),
+     FirstName VARCHAR(255) ,
+     LastName VARCHAR(255),
+     DateOfBirth VARCHAR(255),
+     Gender VARCHAR(255),
+     Street VARCHAR(255),
+     City VARCHAR(255),
+     "State" VARCHAR(255),
+     Country VARCHAR(255),
+     "Password" VARCHAR(255)
+ );
+
+
+
+
+CREATE TABLE UserContact(
+    UserId INT,
+    ContactNumber VARCHAR(255),
+    PRIMARY KEY(UserID,ContactNumber),
+    FOREIGN KEY(UserID) REFERENCES "User"(UserId)
+);
+
+
+
+
+
+
+CREATE TABLE "Policy"(
+    PolicyID INT PRIMARY KEY,
+    CompanyName VARCHAR(255),
+    CoverageDetails VARCHAR(255),
+    AgeLimit VARCHAR(255),
+    PolicyType VARCHAR(255),
+    Duration INT,
+    PremiumAmount INT,
+    Rate VARCHAR(255)    
+);
+
+
+
+
+
+
+CREATE TABLE Hotels(
+    HotelId INT PRIMARY KEY,
+    "Name" VARCHAR(255),
+    "Location" VARCHAR(255),
+    StarRating INT
+);
+
+
+
+
+
+CREATE TABLE HotelAmenities(
+    HotelId INT,
+    Amenities VARCHAR(255),
+    PRIMARY KEY(HotelId,Amenities),
+    FOREIGN KEY(HotelId) REFERENCES Hotels(HotelId)
+);
+
+
+
+
+
+CREATE TABLE "Rooms"(
+    HotelId INT,
+    RoomType VARCHAR(255),
+    RatePerNight INT,
+    Discount INT,
+    TotalRooms INT,
+    PRIMARY KEY(HotelId,RoomType),
+    FOREIGN KEY(HotelId) REFERENCES Hotels(HotelId)
+);
+
+
+
+
+
+CREATE TABLE Flights(
+    FlightNo INT PRIMARY KEY,
+    AirlineName VARCHAR(255),
+    ArrTime VARCHAR(255),
+    DeptTime VARCHAR(255),
+    "Source" VARCHAR(255),
+    Destination VARCHAR(255),
+    TotalSeats INT
+);
+
+
+
+
+
+CREATE TABLE FlightDetails(
+    FlightNo INT,
+    ClassType VARCHAR(255),
+    Fare INT,
+    PRIMARY KEY(FlightNo,ClassType),
+    FOREIGN KEY (FlightNo) REFERENCES Flights(FlightNo)
+);
+
+
+
+
+
+CREATE TABLE CarRental(
+    VehicleId VARCHAR(255) PRIMARY KEY,
+    VehicleName VARCHAR(255) ,
+    CompanyName VARCHAR(255) ,
+    Capacity INT ,
+    PricePerKm INT ,
+    ContactNo VARCHAR(255) ,
+    EmailId VARCHAR(255) 
+);
+
+
+
+
+
+CREATE TABLE Train(
+    TrainCode VARCHAR(255) PRIMARY KEY,
+    StartStationName VARCHAR(255) ,
+    DestinationStationName VARCHAR(255) ,
+    TrainType VARCHAR(255) ,
+    StartTime VARCHAR(255) ,
+    EndTime VARCHAR(255) ,
+    DepartsOn VARCHAR(255) 
+);
+
+
+
+
+CREATE TABLE TrainClass(
+    TrainCode VARCHAR(255) ,
+    ClassType VARCHAR(255) ,
+    Fare INT ,
+    TotalSeats INT,
+    PRIMARY KEY(TrainCode,ClassType),
+    FOREIGN KEY(TrainCode) REFERENCES Train(TrainCode)
+);
+
+
+
+
+
+CREATE TABLE Buses(
+    BusId VARCHAR(255) PRIMARY KEY,
+    BusCompanyName VARCHAR(255),
+    BusType VARCHAR(255),
+    Price INT,
+    TotalSeats INT,
+    StartingLocation VARCHAR(255),
+    FinalLocation VARCHAR(255),
+    StartingTime VARCHAR(255),
+    EndingTime VARCHAR(255)
+);
+
+
+
+
+
+CREATE TABLE TravelAgency(
+    AgencyId INT PRIMARY KEY,
+    AgencyName VARCHAR(255) ,
+    Address VARCHAR(255) ,
+    ContactNo VARCHAR(255) ,
+    Email VARCHAR(255) 
+);
+
+
+
+
+
+
+CREATE TABLE Packages(
+    PackageId INT PRIMARY KEY,
+    "Name" VARCHAR(255) ,
+    StartLocation VARCHAR(255) ,
+    Destination VARCHAR(255) ,
+    TotalPrice INT,
+    AgencyId INT,
+    FOREIGN KEY(AgencyId) REFERENCES TravelAgency(AgencyId)
+);
+
+
+
+
+
+CREATE TABLE Bookings(
+    BookingId INT PRIMARY KEY,
+    UserId INT,
+    BookingType VARCHAR(255),
+    TotalPrice INT,
+    BookingDateTime VARCHAR(255),
+    PolicyId INT,
+    HotelId INT,
+    NumberOfRooms INT,
+    FlightNo INT,
+    NumberOfFlighSeats INT,
+    BusId Varchar(255),
+    NumberOfBusSeats INT,
+    TrainCode VARCHAR(255),
+    NumberOfTrainSeats INT,
+    TrainClassType VARCHAR(255),
+    VehicleID VARCHAR(255),
+    PackageId INT,
+    NumberOfTravellers INT,
+    RoomType VARCHAR(255),
+    FlightClassType VARCHAR(255),
+    FOREIGN KEY (PolicyId) REFERENCES "Policy"(PolicyId),
+    FOREIGN KEY (UserId) REFERENCES "User"(UserID),
+    FOREIGN KEY (HotelId) REFERENCES Hotels(HotelId),
+    FOREIGN KEY (FlightNo) REFERENCES Flights(FlightNo),
+    FOREIGN KEY (BusId) REFERENCES Buses(BusId),
+    FOREIGN KEY (TrainCode) REFERENCES Train(TrainCode),
+    FOREIGN KEY (VehicleID) REFERENCES CarRental(VehicleID),
+    FOREIGN KEY (PackageId) REFERENCES Packages(PackageId)
+);
+
+
+
+
+
+CREATE TABLE Payment(
+    TransactionID INT PRIMARY KEY,
+    UserID INT,
+    PaymentDescription VARCHAR(255),
+    PaymentType VARCHAR(255),
+    Amount INT,
+    ConvenienceFee INT,
+    PaymentDate VARCHAR(255),
+    FOREIGN KEY(UserID) REFERENCES "User"(UserId)
+);
+
+
+
+
+
+
+
+CREATE TABLE Review(
+    UserId INT,
+    BookingID INT,
+    Rating INT,
+    DatePosted VARCHAR(255),
+    ReviewText VARCHAR(255),
+    PRIMARY KEY(ReviewText,UserId,BookingId),
+    FOREIGN KEY(UserID) REFERENCES "User"(UserId),
+    FOREIGN KEY(BookingID) REFERENCES Bookings(BookingID)
+);
+
+
+
+
+
+CREATE TABLE HotelBook(
+    HotelId INT ,
+    PackageId INT,
+    PRIMARY KEY(HotelId,PackageId),
+    FOREIGN KEY(HotelId) REFERENCES Hotels(HotelId),
+    FOREIGN KEY(PackageId) REFERENCES Packages(PackageId)
+);
+
+
+
+
+
+
+CREATE TABLE FlightsBook(
+    FlightNo INT ,
+    PackageId INT,
+    PRIMARY KEY(FlightNo,PackageId),
+    FOREIGN KEY(PackageId) REFERENCES Packages(PackageId), 
+    FOREIGN KEY(FlightNo) REFERENCES Flights(FlightNo)
+);
+
+
+
+
+
+
+CREATE TABLE TrainBook(
+    TrainCode VARCHAR(30),
+    PackageId INT ,
+    PRIMARY KEY(TrainCode,PackageId),
+    FOREIGN KEY(TrainCode) REFERENCES Train(TrainCode),
+    FOREIGN KEY(PackageId) REFERENCES Packages(PackageId)
+);
+
+
+
+
+CREATE TABLE CarRentalBook(
+    VehicleId VARCHAR(30),
+    PackageId INT ,
+    PRIMARY KEY(VehicleId,PackageId),
+    FOREIGN KEY(PackageId) REFERENCES Packages(PackageId), 
+    FOREIGN KEY(VehicleId) REFERENCES CarRental(VehicleId)
+);
+
+

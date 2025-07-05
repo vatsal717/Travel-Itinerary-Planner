@@ -1,0 +1,189 @@
+
+1.Find the most common start and end locations for bus bookings, along with the total number of bookings for each route:
+
+ SELECT B.StartingLocation, B.FinalLocation, COUNT(*) AS TotalBookings
+ FROM Buses AS B
+ GROUP BY B.StartingLocation, B.FinalLocation
+ ORDER BY TotalBookings DESC;
+
+
+
+
+2.Retrieve all bookings made by users aged between 25 and 35 years old:
+
+ SELECT B.*
+ FROM Bookings as B
+ JOIN "User" as U ON B.UserId = U.UserId
+ WHERE U.DateOfBirth BETWEEN '1990-01-01' AND '2000-01-01';
+
+
+
+
+
+3.Find the average fare for each class type across all flights:
+
+ SELECT FD.ClassType, AVG(FD.Fare) AS AvgFare
+ FROM FlightDetails FD
+ GROUP BY FD.ClassType;
+
+
+
+
+
+4.Retrieve the total number of bookings made for each package:
+
+ SELECT P.PackageId, COUNT(B.BookingId) AS TotalBookings
+ FROM Packages P
+ LEFT JOIN Bookings B ON P.PackageId = B.PackageId
+ GROUP BY P.PackageId;
+
+
+
+
+
+5.Find the average rating given by users for each hotel:
+ 
+ SELECT H.HotelId, H."Name", AVG(R.Rating) AS AvgRating
+ FROM Hotels as H
+ JOIN Bookings as B ON H.HotelId = B.HotelId
+ JOIN Review as R ON B.BookingId = R.BookingId
+ GROUP BY H.HotelId, H."Name";
+
+
+
+
+6.List all bookings made by users who have provided reviews:
+
+ SELECT B.bookingid,B.bookingtype,R.rating
+ FROM Bookings as B
+ JOIN Review as R ON B.UserId = R.UserId ;
+
+
+
+
+7.Find the most popular destination based on the total number of bookings made:
+
+ SELECT H."Location" as Destination, COUNT(B.BookingId) as TotalBookings
+ FROM Bookings as B
+ JOIN Hotels as H ON B.HotelId = H.HotelId
+ GROUP BY H."Location"
+ ORDER BY TotalBookings DESC
+ LIMIT 1;
+
+
+
+
+8.Calculate the total number of seats booked for each flight class type:
+
+ SELECT book.flightClassType, SUM(book.NumberOfFlighSeats) as TotalSeatsBooked
+ FROM Bookings as book
+ WHERE book.flightno IS NOT NULL
+ GROUP BY book.flightClassType;
+
+
+
+
+9.Find the average price per kilometer for each vehicle company in the car rental table:
+
+ SELECT CarRental.companyname, AVG(CarRental.PricePerKm) as AvgPricePerKm
+ FROM CarRental 
+ GROUP BY CarRental.companyname;
+
+
+
+
+10.Retrieve the top 5 hotels with the highest revenue generated from room bookings:
+
+ SELECT H.HotelId, H."Name", SUM(B.TotalPrice) as TotalRevenue
+ FROM Hotels as H
+ JOIN Bookings as B ON H.HotelId = B.HotelId
+ GROUP BY H.HotelId, H."Name"
+ ORDER BY TotalRevenue DESC 
+ LIMIT 5;
+
+
+
+
+11.Find the total number of bookings made for each hotel star rating category:
+
+ SELECT H.StarRating, COUNT(B.BookingId) as TotalBookings
+ FROM Hotels as H
+ LEFT JOIN Bookings as B ON H.HotelId = B.HotelId
+ GROUP BY H.StarRating;
+
+
+
+
+12.Give me all buses that has specific start location and destination location:
+
+ SELECT *
+ FROM Buses
+ WHERE StartingLocation = 'Chennai' AND FinalLocation =  'Kanchipuram';
+
+
+
+
+13.Find the total number of bookings made for each hotel amenity:
+
+ SELECT HA.Amenities, COUNT(B.BookingId) AS TotalBookings
+ FROM HotelAmenities HA
+ JOIN HotelBook HB ON HA.HotelId = HB.HotelId
+ JOIN Bookings B ON HB.PackageId = B.PackageId
+ GROUP BY HA.Amenities;
+
+
+
+
+14.Find minimum rate per night for each room type over all hotels:
+
+ Select "Rooms".roomtype,min("Rooms".ratepernight)
+ from (hotels  natural join "Rooms" ) 
+ group by "Rooms".roomtype ;
+	
+
+
+		
+15.Find number of amenities for each hotel:
+
+ select h."Name",count(ha.amenities)
+ from (hotels as h  natural join hotelamenities as ha ) 
+ group by h."Name" ; 
+
+
+
+
+16.Find how much packages is offered by each travel agency:
+
+ select ta.agencyname,count(pa.packageid)
+ from (travelagency as ta  natural join packages as pa ) 
+ group by ta.agencyname ; 
+
+
+
+
+
+17.For each user find total amount that user has paid
+
+ select u.userid,u.firstname,u.lastname,sum(pa.amount),count(pa.amount)
+ from ("User" as u  natural join payment as pa ) 
+ group by u.userid,u.firstname,u.lastname; 
+
+
+
+
+
+18.Give packageid of packages in which they have booking of hotel,flight,cab and train 
+
+ select pa.packageid
+ from(hotelbook natural join flightsbook natural join carrentalbook natural join trainbook natural join packages as pa );
+
+
+
+
+
+19.Calculate the total available seats for individual buses:
+
+ SELECT B.BusId, B.TotalSeats - COALESCE(SUM(NumberOfBusSeats), 0) AS TotalAvailableSeats
+ FROM Buses B
+ LEFT JOIN Bookings BK ON B.BusId = BK.BusId
+ GROUP BY B.BusId, B.TotalSeats;
